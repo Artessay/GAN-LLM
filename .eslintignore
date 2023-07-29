@@ -1,3 +1,7 @@
+dist
+public
 node_modules
-.eslintrc.cjs
-src/types/openapi.*
+.netlify
+.vercel
+.github
+.changeset
