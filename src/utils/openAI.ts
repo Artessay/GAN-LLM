@@ -21,6 +21,7 @@ export const generatePayload = (apiKey: string, messages: ChatMessage[]): Reques
 export const parseOpenAIStream = (rawResponse: Response) => {
   const encoder = new TextEncoder()
   const decoder = new TextDecoder()
+  console.log('rawResponse', rawResponse)
   if (!rawResponse.ok) {
     return new Response(rawResponse.body, {
       status: rawResponse.status,
@@ -28,9 +29,12 @@ export const parseOpenAIStream = (rawResponse: Response) => {
     })
   }
 
+  console.log('rawResponse.body', rawResponse.body)
   const stream = new ReadableStream({
     async start(controller) {
+      console.log('start')
       const streamParser = (event: ParsedEvent | ReconnectInterval) => {
+        console.log('event', event)
         if (event.type === 'event') {
           const data = event.data
           if (data === '[DONE]') {
@@ -49,17 +53,22 @@ export const parseOpenAIStream = (rawResponse: Response) => {
             // }
             const json = JSON.parse(data)
             const text = json.choices[0].delta?.content || ''
+            console.log('text', text)
             const queue = encoder.encode(text)
             controller.enqueue(queue)
           } catch (e) {
+            console.log('error', e)
             controller.error(e)
           }
         }
       }
 
       const parser = createParser(streamParser)
-      for await (const chunk of rawResponse.body as any)
+      console.log('parser', parser)
+      for await (const chunk of rawResponse.body as any) {
+        console.log('chunk', chunk)
         parser.feed(decoder.decode(chunk))
+      }
     },
   })
 

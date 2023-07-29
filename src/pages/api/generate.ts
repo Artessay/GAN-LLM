@@ -40,6 +40,8 @@ export const post: APIRoute = async(context) => {
   if (httpsProxy)
     initOptions.dispatcher = new ProxyAgent(httpsProxy)
   // #vercel-end
+  
+  console.log('baseUrl', baseUrl)
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-expect-error
@@ -52,6 +54,8 @@ export const post: APIRoute = async(context) => {
       },
     }), { status: 500 })
   }) as Response
+
+  console.log('response')
 
   return parseOpenAIStream(response) as Response
 }
