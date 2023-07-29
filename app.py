@@ -5,7 +5,8 @@ app = Flask(__name__)
 CORS(app)
 
 @app.route('/chat', methods=['POST'])
-def ping():
+def chat(message):
+    print(message)
     return "Hello World!"
 
 if __name__ == '__main__':
