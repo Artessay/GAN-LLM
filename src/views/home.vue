@@ -12,12 +12,13 @@ import { useUserStore } from '@/store';
 const router = useRouter();
 const userStore = useUserStore();
 
-let target = '';
-if (!userStore.user) {
-  target = 'login';
-} else {
-  target = 'conversation';
-}
+// let target = '';
+// if (!userStore.user) {
+//   target = 'login';
+// } else {
+//   target = 'conversation';
+// }
+let target = 'conversation';
 
 router
   .push({
