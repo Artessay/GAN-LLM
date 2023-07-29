@@ -199,22 +199,36 @@ body {
   }
 
   async function send(message, callback, err) {
-    try {
-      let res = await fetch('./api', { method: 'post', body: JSON.stringify(message), headers: { 'content-type': 'application/json' } });
-      let reader = res.body
-        .pipeThrough(new TextDecoderStream())
-        .pipeThrough(splitLinesTransformStream())
-        .getReader();
-      for await (let item of wrapReader(reader)) {
-        let v = JSON.parse(item);
-        if (v.delta?.content) {
-          callback(v.delta.content);
+    url = "http:localhost:5000/chat"
+    var httpRequest = new XMLHttpRequest();
+    httpRequest.open("POST", url, true);
+    httpRequest.setRequestHeader("Content-Type", "text/plain");
+    httpRequest.send(message);
+    httpRequest.onreadystatechange = ()=>{
+        if(httpRequest.readyState == 4 && httpRequest.status == 200){
+            // var data = JSON.parse(httpRequest.responseText);
+            // console.log(data);
+            console.log(httpRequest.responseText);
+            callback(httpRequest.responseText);
         }
-      }
-      callback();
-    } catch (e) {
-      err(e);
-    }
+    }    
+
+    // try {
+    //   let res = await fetch('./api', { method: 'post', body: JSON.stringify(message), headers: { 'content-type': 'application/json' } });
+    //   let reader = res.body
+    //     .pipeThrough(new TextDecoderStream())
+    //     .pipeThrough(splitLinesTransformStream())
+    //     .getReader();
+    //   for await (let item of wrapReader(reader)) {
+    //     let v = JSON.parse(item);
+    //     if (v.delta?.content) {
+    //       callback(v.delta.content);
+    //     }
+    //   }
+    //   callback();
+    // } catch (e) {
+    //   err(e);
+    // }
   }
 
   let messages = [
@@ -269,9 +283,6 @@ body {
       shortened.unshift(messages[i]);
     }
     shortened.unshift(messages[0]);
-    send({
-      messages: shortened,
-      max_tokens: 1000,
-    }, callback, err);
+    send(shortened, callback, err);
   }
 </script>
