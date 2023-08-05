@@ -5,7 +5,7 @@ import './App.css';
 import {ResponseInterface} from "../PromptResponseList/response-interface";
 import PromptResponseList from "../PromptResponseList/PromptResponseList";
 
-type ModelValueType = 'gpt' | 'codex' | 'image';
+type ModelValueType = 'gpt' | 'gan';
 const App = () => {
 
   const [responseList, setResponseList] = useState<ResponseInterface[]>([]);
@@ -109,21 +109,16 @@ const App = () => {
 
     try {
       // Send a POST request to the API with the prompt in the request body
-      const response = await axios.post('get-prompt-result', {
+      const response = await axios.post('chat', {
         prompt: _prompt,
         model: modelValue
       });
-      if (modelValue === 'image') {
-        // Show image for `Create image` model
-        updateResponse(uniqueId, {
-          image: response.data,
-        });
-      } else {
-        updateResponse(uniqueId, {
-          response: response.data.trim(),
-        });
-      }
-
+      
+      console.log(response);
+      updateResponse(uniqueId, {
+        response: response.data,
+      });
+      
       setPromptToRetry(null);
       setUniqueIdToRetry(null);
     } catch (err) {
@@ -157,10 +152,8 @@ const App = () => {
       <div id="model-select-container">
         <label htmlFor="model-select">Select model:</label>
         <select id="model-select" value={modelValue} onChange={(event) => setModelValue(event.target.value as ModelValueType)}>
-          <option value="gpt">GPT-3 (Understand and generate natural language )</option>
-          <option value="codex">Codex (Understand and generate code, including translating natural language to code)
-          </option>
-          <option value="image">Create Image (Create AI image using DALL·E models)</option>
+          <option value="gpt">GPT without Privacy Protection</option>
+          <option value="gan">GAN Protected Large Language Model</option>
         </select>
       </div>
       <div id="input-container">
