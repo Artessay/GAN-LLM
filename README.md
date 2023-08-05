@@ -1,24 +1,16 @@
-# ChatGPT Web Application
+# GAN-LLM
 
-A web application that allows users to interact with OpenAI's GPT-3 language model through a simple and user-friendly interface.
-This app is for demo purpose to test OpenAI API and may contain issues/bugs.
-
-If you are looking for a simple HTML/vanilla JavaScript version, check [here](https://github.com/ioanmo226/chatgpt-web-application)
-
-![Demo Gif](/client/src/img/demo2.gif)
-
-<a href="https://www.buymeacoffee.com/ioanmo226" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="51" width="217"></a>
-
+A web application that allows users to interact with Large Language Model with and without privacy protection.
 
 ## Features
-- User-friendly interface for making requests to the OpenAI API
+- User-friendly interface for making requests to the Large Language Model
 - Responses are displayed in a chat-like format
-- Select Models (Davinci, Codex, Create Image) based on your needs
+- Select Models (GPT, GAN-LLM) based on your needs
 - Highlight code syntax
 
 ## Technologies Used
 - For client, I used React.js.
-- For server, I used express.
+- For server, I used Flask.
 
 ## Setup Introduction
 This guide will help you set up the repository on your local machine. Please follow these steps carefully to ensure a smooth setup process.
@@ -26,7 +18,7 @@ This guide will help you set up the repository on your local machine. Please fol
 ### Cloning the repository
 Use the following command to clone the repository:
 ```sh
-git clone https://github.com/ioanmo226/chatgpt-web-application
+git clone https://github.com/Artessay/GAN-LLM.git
 ```
 
 ### Backend Setup
@@ -37,16 +29,12 @@ cd server # Navigate to the server directory:
 ```
 - Install dependencies
 ```sh
-npm install #install the backend dependencies
-```
-- Set the OPENAI_API_KEY in the .env file:
-```sh
-OPENAI_API_KEY=YOUR_OPENAI_API_KEY
+pip install -r requirements.txt #install the backend dependencies
 ```
 
 - Start the backend server by running the following command:
 ```sh
-node index.js
+python app.py
 ```
 
 ### Frontend Setup
@@ -63,7 +51,7 @@ npm install
 
 - Set the `REACT_APP_BACKEND_URL` in the `.env` file to the URL of your backend server. For local development, use the following URL:
 ```sh
-REACT_APP_BACKEND_URL=http://localhost:3001/
+REACT_APP_BACKEND_URL=http://localhost:3080/
 ```
 
 - Start the frontend app by running the following command:

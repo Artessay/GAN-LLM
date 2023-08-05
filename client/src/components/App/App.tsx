@@ -65,6 +65,8 @@ const App = () => {
   }
 
   const updateResponse = (uid: string, updatedObject: Record<string, unknown>) => {
+    const element = document.getElementById(uid) as HTMLElement;
+    element.textContent = ''
     setResponseList(prevResponses => {
       const updatedList = [...prevResponses]
       const index = prevResponses.findIndex((response) => response.id === uid);
@@ -114,7 +116,7 @@ const App = () => {
         model: modelValue
       });
       
-      console.log(response);
+      // console.log(response);
       updateResponse(uniqueId, {
         response: response.data,
       });

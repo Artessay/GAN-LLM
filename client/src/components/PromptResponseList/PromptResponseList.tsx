@@ -1,6 +1,6 @@
 import React, {FC, useEffect, useRef} from 'react';
 import ChatGptImg from '../../img/chatgpt.png';
-import MyImg from '../../img/me.png';
+import MyImg from '../../img/me.svg';
 import ReactMarkdown from 'react-markdown';
 import {ResponseInterface} from "./response-interface";
 import hljs from 'highlight.js';
