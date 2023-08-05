@@ -32,6 +32,7 @@
       "react-app/jest"
     ]
   },
+  "homepage": "https://artessay.github.io/GAN-LLM/",
   "browserslist": {
     "production": [
       ">0.2%",
