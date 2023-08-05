@@ -49,7 +49,7 @@ cd client
 npm install
 ```
 
-- Set the `REACT_APP_BACKEND_URL` in the `.env` file to the URL of your backend server. For local development, use the following URL:
+- Set the `REACT_APP_BACKEND_URL` in the `.env` file to the URL of your backend server. For local development, use the following URL. Note: if you want to deploy it on the website, you should use your public IP address.
 ```sh
 REACT_APP_BACKEND_URL=http://localhost:3080/
 ```
