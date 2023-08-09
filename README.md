@@ -1,6 +1,6 @@
 # GAN-LLM
 
-A web application that allows users to interact with Large Language Model with and without privacy protection.
+A web application that allows users to interact with Large Language Model and recognize the importance of privacy protection in large language model. You can experience the web frontend here: https://artessay.github.io/GAN-LLM/ .
 
 ## Features
 - User-friendly interface for making requests to the Large Language Model
@@ -9,7 +9,7 @@ A web application that allows users to interact with Large Language Model with a
 - Highlight code syntax
 
 ## Technologies Used
-- For client, I used React.js.
+- For client, I used React.
 - For server, I used Flask.
 
 ## Setup Introduction
@@ -74,11 +74,10 @@ npm run build
 - Once the setup process is complete, the frontend will be accessible at the URL of your backend server.
 
 ## Usage
-- Type in the input field and press enter or click on the send button to make a request to the OpenAI API
-- Use control+enter to add line breaks in the input field
+- Type in the input field and press enter or click on the send button to make a request to the Large Language Model
+- Use **control+enter** to add line breaks in the input field
 - Responses are displayed in the chat-like format on top of the page
 - Generate code, including translating natural language to code
-- You can also create AI images using DALL·E models 
 
 ## Contributing
 
