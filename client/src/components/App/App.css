@@ -14,6 +14,12 @@ body {
   margin: 0;
 }
 
+#response-area {
+  border: none;
+  overflow-y: auto;
+  flex: 1;
+}
+
 /* Remove border color from the response list container */
 #response-list {
   border: none;
