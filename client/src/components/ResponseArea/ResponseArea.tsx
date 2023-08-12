@@ -158,18 +158,18 @@ const ResponseArea = forwardRef<ResponseAreaRefPros, ResponseAreaPros>(
     }));
 
     return (
-        <div className="App">
-        <div id="response-list">
-            <PromptResponseList responseList={responseList} key="response-list"/>
-        </div>
-        { uniqueIdToRetry &&
-            (<div id="regenerate-button-container">
-            <button id="regenerate-response-button" className={isLoading ? 'loading' : ''} onClick={() => regenerateResponse()}>
-                Regenerate Response
-            </button>
+        <div className="question-answer">
+            <div id="response-list">
+                <PromptResponseList responseList={responseList} key="response-list"/>
             </div>
-            )
-        }
+            { uniqueIdToRetry &&
+                (<div id="regenerate-button-container">
+                <button id="regenerate-response-button" className={isLoading ? 'loading' : ''} onClick={() => regenerateResponse()}>
+                    Regenerate Response
+                </button>
+                </div>
+                )
+            }
         </div>
     );
 })
