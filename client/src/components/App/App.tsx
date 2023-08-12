@@ -1,177 +1,52 @@
-import {useState} from 'react';
-import axios from "axios";
+import {useRef, useState} from 'react';
 import PromptInput from "../PromptInput/PromptInput";
 import './App.css';
-import {ResponseInterface} from "../PromptResponseList/response-interface";
-import PromptResponseList from "../PromptResponseList/PromptResponseList";
+import { ResponseAreaRefPros } from '../ResponseArea/area-ref-interface';
+import ResponseArea from '../ResponseArea/ResponseArea';
 
-type ModelValueType = 'gpt' | 'gan';
 const App = () => {
 
-  const [responseList, setResponseList] = useState<ResponseInterface[]>([]);
+  const responseAreaRef1 = useRef<ResponseAreaRefPros>(null);
+  const responseAreaRef2 = useRef<ResponseAreaRefPros>(null);
+
+  const callGetGPTResult = () => {
+    responseAreaRef1.current?.getGPTResult()
+    responseAreaRef2.current?.getGPTResult()
+  }
+
   const [prompt, setPrompt] = useState<string>('');
-  const [promptToRetry, setPromptToRetry] = useState<string | null>(null);
-  const [uniqueIdToRetry, setUniqueIdToRetry] = useState<string | null>(null);
-  const [modelValue, setModelValue] = useState<ModelValueType>('gpt');
-  const [isLoading, setIsLoading] = useState(false);
-  let loadInterval: number | undefined;
-
-  const generateUniqueId = () => {
-    const timestamp = Date.now();
-    const randomNumber = Math.random();
-    const hexadecimalString = randomNumber.toString(16);
-
-    return `id-${timestamp}-${hexadecimalString}`;
-  }
-
-  const htmlToText = (html: string) => {
-    const temp = document.createElement('div');
-    temp.innerHTML = html;
-    return temp.textContent;
-  }
-
-  const delay = (ms: number) => {
-    return new Promise( resolve => setTimeout(resolve, ms) );
-  }
-
-  const addLoader = (uid: string) => {
-    const element = document.getElementById(uid) as HTMLElement;
-    element.textContent = ''
-
-    // @ts-ignore
-    loadInterval = setInterval(() => {
-      // Update the text content of the loading indicator
-      element.textContent += '.';
-
-      // If the loading indicator has reached three dots, reset it
-      if (element.textContent === '....') {
-        element.textContent = '';
-      }
-    }, 300);
-  }
-
-
-  const addResponse = (selfFlag: boolean, response?: string) => {
-    const uid = generateUniqueId()
-    setResponseList(prevResponses => [
-      ...prevResponses,
-      {
-        id: uid,
-        response,
-        selfFlag
-      },
-    ]);
-    return uid;
-  }
-
-  const updateResponse = (uid: string, updatedObject: Record<string, unknown>) => {
-    const element = document.getElementById(uid) as HTMLElement;
-    element.textContent = ''
-    setResponseList(prevResponses => {
-      const updatedList = [...prevResponses]
-      const index = prevResponses.findIndex((response) => response.id === uid);
-      if (index > -1) {
-        updatedList[index] = {
-          ...updatedList[index],
-          ...updatedObject
-        }
-      }
-      return updatedList;
-    });
-  }
-
-  const regenerateResponse = async () => {
-    await getGPTResult(promptToRetry, uniqueIdToRetry);
-  }
-
-  const getGPTResult = async (_promptToRetry?: string | null, _uniqueIdToRetry?: string | null) => {
-    // Get the prompt input
-    const _prompt = _promptToRetry ?? htmlToText(prompt);
-
-    // If a response is already being generated or the prompt is empty, return
-    if (isLoading || !_prompt) {
-      return;
-    }
-
-    setIsLoading(true);
-
-    // Clear the prompt input
-    setPrompt('');
-
-    let uniqueId: string;
-    if (_uniqueIdToRetry) {
-      uniqueId = _uniqueIdToRetry;
-    } else {
-      // Add the self prompt to the response list
-      addResponse(true, _prompt);
-      uniqueId = addResponse(false);
-      await delay(50);
-      addLoader(uniqueId);
-    }
-
-    try {
-      // Send a POST request to the API with the prompt in the request body
-      const response = await axios.post(
-        'chat', 
-        {
-          prompt: _prompt,
-          model: modelValue
-        },
-        {
-          timeout: 5000
-        }
-      );
-      
-      // console.log(response);
-      updateResponse(uniqueId, {
-        response: response.data,
-      });
-      
-      setPromptToRetry(null);
-      setUniqueIdToRetry(null);
-    } catch (err) {
-      setPromptToRetry(_prompt);
-      setUniqueIdToRetry(uniqueId);
-      updateResponse(uniqueId, {
-        // @ts-ignore
-        response: `Error: ${err.message}`,
-        error: true
-      });
-    } finally {
-      // Clear the loader interval
-      clearInterval(loadInterval);
-      setIsLoading(false);
-    }
-  }
+  const [isLoading1, setIsLoading1] = useState(false);
+  const [isLoading2, setIsLoading2] = useState(false);
 
   return (
     <div className="App">
-      <div id="response-list">
-        <PromptResponseList responseList={responseList} key="response-list"/>
+      <div id='response-area'>
+        <ResponseArea 
+          ref={responseAreaRef1}
+          modelValue='gpt'
+          prompt={prompt}
+          updatePrompt={(prompt) => setPrompt(prompt)}
+          isLoading={isLoading1}
+          updateIsLoading={(isLoading) => setIsLoading1(isLoading)}
+        />
+        <ResponseArea 
+          ref={responseAreaRef2}
+          modelValue='gan'
+          prompt={prompt}
+          updatePrompt={(prompt) => setPrompt(prompt)}
+          isLoading={isLoading2}
+          updateIsLoading={(isLoading) => setIsLoading2(isLoading)}
+        />
       </div>
-      { uniqueIdToRetry &&
-        (<div id="regenerate-button-container">
-          <button id="regenerate-response-button" className={isLoading ? 'loading' : ''} onClick={() => regenerateResponse()}>
-            Regenerate Response
-          </button>
-        </div>
-        )
-      }
-      <div id="model-select-container">
-        <label htmlFor="model-select">Select model:</label>
-        <select id="model-select" value={modelValue} onChange={(event) => setModelValue(event.target.value as ModelValueType)}>
-          <option value="gpt">GPT without Privacy Protection</option>
-          <option value="gan">GAN Protected Large Language Model</option>
-        </select>
-      </div>
+      
       <div id="input-container">
         <PromptInput
           prompt={prompt}
-          onSubmit={() => getGPTResult()}
+          onSubmit={() => callGetGPTResult()}
           key="prompt-input"
           updatePrompt={(prompt) => setPrompt(prompt)}
         />
-        <button id="submit-button" className={isLoading ? 'loading' : ''} onClick={() => getGPTResult()}></button>
+        <button id="submit-button" className={(isLoading1 && isLoading2) ? 'loading' : ''} onClick={() => callGetGPTResult()}></button>
       </div>
     </div>
   );

@@ -1,0 +1,31 @@
+/* Remove border color from the response list container */
+#response-list {
+    border: none;
+    /* overflow-y: auto; */
+    /* flex: 1; */
+}
+
+.chatgpt-response {
+    background-color: rgba(68, 70, 84, 1);
+}
+
+.my-question {
+    background-color: rgba(52, 53, 65, 1);
+}
+
+
+#regenerate-button-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+#regenerate-response-button {
+    color: white;
+    border: none;
+    background: #10A37F;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
