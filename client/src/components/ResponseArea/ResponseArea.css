@@ -29,3 +29,11 @@
     padding: 10px 20px;
     cursor: pointer;
 }
+
+.model-title {
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    margin: 10px;
+    font-size: larger;
+}

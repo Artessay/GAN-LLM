@@ -159,6 +159,11 @@ const ResponseArea = forwardRef<ResponseAreaRefPros, ResponseAreaPros>(
 
     return (
         <div className="question-answer">
+            {
+                modelValue === "gpt" 
+                ? <div className='model-title'>GPT</div>
+                : <div className='model-title'>GAN</div>
+            }
             <div id="response-list">
                 <PromptResponseList responseList={responseList} key="response-list"/>
             </div>
