@@ -6,25 +6,36 @@ import ResponseArea from '../ResponseArea/ResponseArea';
 
 const App = () => {
 
-  const responseAreaRef = useRef<ResponseAreaRefPros>(null);
+  const responseAreaRef1 = useRef<ResponseAreaRefPros>(null);
+  const responseAreaRef2 = useRef<ResponseAreaRefPros>(null);
 
   const callGetGPTResult = () => {
-    responseAreaRef.current?.getGPTResult()
+    responseAreaRef1.current?.getGPTResult()
+    responseAreaRef2.current?.getGPTResult()
   }
 
   const [prompt, setPrompt] = useState<string>('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading1, setIsLoading1] = useState(false);
+  const [isLoading2, setIsLoading2] = useState(false);
 
   return (
     <div className="App">
       <div id='response-area'>
         <ResponseArea 
-          ref={responseAreaRef}
+          ref={responseAreaRef1}
           modelValue='gpt'
           prompt={prompt}
           updatePrompt={(prompt) => setPrompt(prompt)}
-          isLoading={isLoading}
-          updateIsLoading={(isLoading) => setIsLoading(isLoading)}
+          isLoading={isLoading1}
+          updateIsLoading={(isLoading) => setIsLoading1(isLoading)}
+        />
+        <ResponseArea 
+          ref={responseAreaRef2}
+          modelValue='gan'
+          prompt={prompt}
+          updatePrompt={(prompt) => setPrompt(prompt)}
+          isLoading={isLoading2}
+          updateIsLoading={(isLoading) => setIsLoading2(isLoading)}
         />
       </div>
       
@@ -35,7 +46,7 @@ const App = () => {
           key="prompt-input"
           updatePrompt={(prompt) => setPrompt(prompt)}
         />
-        <button id="submit-button" className={isLoading ? 'loading' : ''} onClick={() => callGetGPTResult()}></button>
+        <button id="submit-button" className={(isLoading1 && isLoading2) ? 'loading' : ''} onClick={() => callGetGPTResult()}></button>
       </div>
     </div>
   );
