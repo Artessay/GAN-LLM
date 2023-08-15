@@ -33,65 +33,63 @@ ctx = nullcontext() if device_type == 'cpu' else torch.amp.autocast(device_type=
 app = Flask(__name__)
 CORS(app)
 
+unwanted_prefix = '_orig_mod.'
+
+checkpoint_gpt = torch.load('/home/featurize/work/gpts/mymodel/squad_ckpt.pt')
+model_gpt = gptconf = GPTConfig(**checkpoint_gpt['model_args'])
+model_gpt = GPT(model_gpt)
+state_dict_gpt = checkpoint_gpt['model']
+for k,v in list(state_dict_gpt.items()):
+    if k.startswith(unwanted_prefix):
+        state_dict_gpt[k[len(unwanted_prefix):]] = state_dict_gpt.pop(k)
+model_gpt.load_state_dict(state_dict_gpt)
+model_gpt.eval()
+model_gpt.to('cuda:0')
+if compile:
+    model_gpt = torch.compile(model_gpt) # requires PyTorch 2.0 (optional)
+
+print(f'gpt2-xl loaded')
+
+checkpoint_finetune = torch.load('/home/featurize/work/gpts/mymodel/squad_gan_ckpt.pt') # !! checked: model's path
+model_finetune = GPTConfig(**checkpoint_finetune['model_args'])
+model_finetune = GPT(model_finetune)
+state_dict_finetune = checkpoint_finetune['model']
+for k,v in list(state_dict_finetune.items()):
+    if k.startswith(unwanted_prefix):
+        state_dict_finetune[k[len(unwanted_prefix):]] = state_dict_finetune.pop(k)
+model_finetune.load_state_dict(state_dict_finetune)
+        
+model_finetune.eval()
+model_finetune.to('cuda:1')
+if compile:
+    model_finetune = torch.compile(model_finetune) # requires PyTorch 2.0 (optional)
+print(f'gpt2-finetuned loaded')
+
+enc = tiktoken.get_encoding("gpt2")
+encode = lambda s: enc.encode(s, allowed_special={"<|endoftext|>"})
+decode = lambda l: enc.decode(l)
+
 def get_response(prompt, model):
     print(prompt)
+
     if model == 'gpt':
-        checkpoint = torch.load('out-squad-new/ckpt.pt') # !! checked: model's path
-        gptconf = GPTConfig(**checkpoint['model_args'])
-        model = GPT(gptconf)
-        state_dict = checkpoint['model']
-        unwanted_prefix = '_orig_mod.'
-        for k,v in list(state_dict.items()):
-            if k.startswith(unwanted_prefix):
-                state_dict[k[len(unwanted_prefix):]] = state_dict.pop(k)
-        model.load_state_dict(state_dict)
-                
-        model.eval()
-        model.to(device)
-        if compile:
-            model = torch.compile(model) # requires PyTorch 2.0 (optional)
-        enc = tiktoken.get_encoding("gpt2")
-        encode = lambda s: enc.encode(s, allowed_special={"<|endoftext|>"})
-        decode = lambda l: enc.decode(l)
-        start_ids = encode(prompt)
-        x = (torch.tensor(start_ids, dtype=torch.long, device=device)[None, ...])
-
         # run generation
         with torch.no_grad():
             with ctx:
+                start_ids = encode(prompt)
+                x = (torch.tensor(start_ids, dtype=torch.long, device='cuda:0')[None, ...])
                 for k in range(num_samples):
-                    y = model.generate(x, max_new_tokens, temperature=temperature, top_k=top_k)
-
+                    y = model_gpt.generate(x, max_new_tokens, temperature=temperature, top_k=top_k)
+        print(f'gpt Ans:')
         return decode(y[0].tolist())
-        # return "Hello GPT"
-
     else:
-        checkpoint = torch.load('out-squad-GAN/ckpt.pt') # !! checked: model's path
-        gptconf = GPTConfig(**checkpoint['model_args'])
-        model = GPT(gptconf)
-        state_dict = checkpoint['model']
-        unwanted_prefix = '_orig_mod.'
-        for k,v in list(state_dict.items()):
-            if k.startswith(unwanted_prefix):
-                state_dict[k[len(unwanted_prefix):]] = state_dict.pop(k)
-        model.load_state_dict(state_dict)
-                
-        model.eval()
-        model.to(device)
-        if compile:
-            model = torch.compile(model) # requires PyTorch 2.0 (optional)
-        enc = tiktoken.get_encoding("gpt2")
-        encode = lambda s: enc.encode(s, allowed_special={"<|endoftext|>"})
-        decode = lambda l: enc.decode(l)
-        start_ids = encode(prompt)
-        x = (torch.tensor(start_ids, dtype=torch.long, device=device)[None, ...])
-
-        # run generation
         with torch.no_grad():
             with ctx:
+                start_ids = encode(prompt)
+                x = (torch.tensor(start_ids, dtype=torch.long, device='cuda:1')[None, ...])
                 for k in range(num_samples):
-                    y = model.generate(x, max_new_tokens, temperature=temperature, top_k=top_k)
-
+                    y = model_finetune.generate(x, max_new_tokens, temperature=temperature, top_k=top_k)
+        print(f'finetune Ans:')
         return decode(y[0].tolist())
 
 @app.route('/chat', methods=['POST', 'GET'])
@@ -102,6 +100,7 @@ def chat():
     return response
 
 if __name__ == '__main__':
+    
     app.run(host='0.0.0.0', port=8080)
     # print("gpt")
     # print(get_response('To whom was John B. Kroc married?', 'gpt'))
