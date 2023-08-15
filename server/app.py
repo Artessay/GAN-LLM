@@ -100,10 +100,4 @@ def chat():
     return response
 
 if __name__ == '__main__':
-    
     app.run(host='0.0.0.0', port=8080)
-    # print("gpt")
-    # print(get_response('To whom was John B. Kroc married?', 'gpt'))
-
-    # print("gan")
-    # print(get_response('To whom was John B. Kroc married?', 'gan'))
