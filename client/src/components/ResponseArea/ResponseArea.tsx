@@ -123,11 +123,11 @@ const ResponseArea = forwardRef<ResponseAreaRefPros, ResponseAreaPros>(
         const response = await axios.post(
             'chat', 
             {
-            prompt: _prompt,
-            model: modelValue
+                prompt: _prompt,
+                model: modelValue
             },
             {
-            timeout: 60000
+                timeout: 60000    // 60,000 ms total 1 minute
             }
         );
         
