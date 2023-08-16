@@ -127,7 +127,7 @@ const ResponseArea = forwardRef<ResponseAreaRefPros, ResponseAreaPros>(
                 model: modelValue
             },
             {
-                timeout: 60000    // 60,000 ms total 1 minute
+                timeout: 180000    // 180,000 ms total 3 minute
             }
         );
         
