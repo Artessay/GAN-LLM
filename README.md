@@ -51,7 +51,7 @@ npm install
 
 - Set the `REACT_APP_BACKEND_URL` in the `.env` file to the URL of your backend server. For local development, use the following URL. Note: if you want to deploy it on the website, you should use your public IP address.
 ```sh
-REACT_APP_BACKEND_URL=http://localhost:8080/
+REACT_APP_BACKEND_URL=http://localhost:3080/
 ```
 
 - Start the frontend app by running the following command:
@@ -84,5 +84,3 @@ npm run build
 This project welcomes contributions and suggestions for improvements. If you have any ideas, please feel free to open an issue or create a pull request.
 
 Thank you for your consideration.
-
-

@@ -1,5 +1,2 @@
 Flask
 Flask_Cors
-transformers
-tiktoken
-waitress
