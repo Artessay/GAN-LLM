@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/GAN-LLM/static/css/main.ca441745.css",
-    "main.js": "/GAN-LLM/static/js/main.d965f9df.js",
+    "main.js": "/GAN-LLM/static/js/main.df722d6e.js",
     "static/js/787.fa039871.chunk.js": "/GAN-LLM/static/js/787.fa039871.chunk.js",
     "index.html": "/GAN-LLM/index.html",
     "static/media/me.svg": "/GAN-LLM/static/media/me.77a11d106cc02cc2562625139f84cb0e.svg",
     "main.ca441745.css.map": "/GAN-LLM/static/css/main.ca441745.css.map",
-    "main.d965f9df.js.map": "/GAN-LLM/static/js/main.d965f9df.js.map",
+    "main.df722d6e.js.map": "/GAN-LLM/static/js/main.df722d6e.js.map",
     "787.fa039871.chunk.js.map": "/GAN-LLM/static/js/787.fa039871.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.ca441745.css",
-    "static/js/main.d965f9df.js"
+    "static/js/main.df722d6e.js"
   ]
 }
